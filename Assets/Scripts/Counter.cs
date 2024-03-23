@@ -5,7 +5,7 @@ public class Counter : MonoBehaviour
 {
     [SerializeField, Min(0)] private float _delay;
 
-    private IEnumerator _enumerator;
+    private IEnumerator _coroutine;
     private CounterUI _counterUI;
     private int _value;
     private bool _isActive;
@@ -17,7 +17,7 @@ public class Counter : MonoBehaviour
         _counterUI = new CounterUI(this);
 
     private void Start() =>
-        _enumerator = IncreaseValueByOne(_delay);
+        _coroutine = IncreaseValueByOne(_delay);
 
     private void Update()
     {
@@ -26,9 +26,9 @@ public class Counter : MonoBehaviour
             _isActive = !_isActive;
 
             if (_isActive)
-                StartCoroutine(_enumerator);
+                StartCoroutine(_coroutine);
             else
-                StopCoroutine(_enumerator);
+                StopCoroutine(_coroutine);
         }
     }
 
