@@ -5,6 +5,7 @@ public class Counter : MonoBehaviour
 {
     [SerializeField, Min(0)] private float _delay;
 
+    private IEnumerator _enumerator;
     private CounterUI _counterUI;
     private int _value;
     private bool _isActive;
@@ -16,16 +17,23 @@ public class Counter : MonoBehaviour
         _counterUI = new CounterUI(this);
 
     private void Start() =>
-        StartCoroutine(IncreaseValueByOne(_delay));
+        _enumerator = IncreaseValueByOne(_delay);
 
-    private void Update() =>
-        SetActive();
-
-    private void SetActive()
+    private void Update()
     {
         if (Input.GetMouseButtonDown(0))
-            _isActive = _isActive == false;
+        {
+            _isActive = !_isActive;
+
+            if (_isActive)
+                StartCoroutine(_enumerator);
+            else
+                StopCoroutine(_enumerator);
+        }
     }
+
+    public override string ToString() =>
+        _value.ToString();
 
     private IEnumerator IncreaseValueByOne(float delay)
     {
@@ -33,18 +41,10 @@ public class Counter : MonoBehaviour
 
         while (enabled)
         {
-            if (_isActive)
-            {
-                _value++;
-                _counterUI.ShowInfoInConsole();
+            _value++;
+            _counterUI.ShowInfoInConsole();
 
-                yield return wait;
-            }
-
-            yield return null;
+            yield return wait;
         }
     }
-
-    public override string ToString() =>
-        _value.ToString();
 }
